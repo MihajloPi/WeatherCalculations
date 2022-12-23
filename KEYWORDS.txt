@@ -1,0 +1,13 @@
+WeatherCalculations	KEYWORD1
+Weather	KEYWORD1
+getSeaLevelPressure	KEYWORD2
+getAltitude	KEYWORD2
+tempCtoF	KEYWORD2
+tempFtoC	KEYWORD2
+getDewPoint	KEYWORD2
+getHeatIndex	KEYWORD2
+getHumidex	KEYWORD2
+getWindChill	KEYWORD2
+getComfort	KEYWORD2
+getForecast KEYWORD2
+getForecastSeverity KEYWORD2
