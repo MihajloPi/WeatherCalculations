@@ -21,6 +21,13 @@ class Weather {
     double getHumidex(double Temperature, double DewPoint);
     double getWindChill(double Temperature, double WindSpeed);
     uint8_t getComfort(double heatIndex);
+    //Pressure trend variable: 1 for rising, 2 for falling, everything else is by default steady
+    //Months are 1-12
+    //Wind direction is descriptive ("N", "SSE" etc.)
+    //Hemisphere true for the northern, false for the southern
+  
+    //getForecast function returns the descriptive explanation of the weather (e.g. "Fine weather")
+    //getForecastSeverity does the same but returns the index in the forecast array
     char* getForecast (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950);
     int getForecastSeverity (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950);
 
