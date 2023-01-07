@@ -28,6 +28,8 @@ class Weather {
   
     //getForecast function returns the descriptive explanation of the weather (e.g. "Fine weather")
     //getForecastSeverity does the same but returns the index in the forecast array
+  
+    //These forecasting functions use Zambretti's algorithm which is on some accounts over 90% accurate in temperate climates when used at 9 AM local solar time
     char* getForecast (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950);
     int getForecastSeverity (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950);
 
