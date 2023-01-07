@@ -71,7 +71,7 @@ double Weather::getWindChill(double Temperature, double WindSpeed) {
   return WindChill;
 };
 
-byte Weather::getComfort(double heatIndex) {
+uint8_t Weather::getComfort(double heatIndex) {
   if (heatIndex >= 20.0 && heatIndex <= 23.0) {
     return 1; //Uncomfortable
   }
@@ -92,7 +92,7 @@ byte Weather::getComfort(double heatIndex) {
   }
 }
 
-const char* Weather::getForecast (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950) {
+char* Weather::getForecast (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
   double constant = (pressureRange / 22);
   boolean z_season = false;
