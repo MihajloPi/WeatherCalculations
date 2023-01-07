@@ -23,7 +23,7 @@ class Weather {
     uint8_t getComfort(double heatIndex);
     //Pressure trend variable: 1 for rising, 2 for falling, everything else is by default steady
     //Months are 1-12
-    //Wind direction is descriptive ("N", "SSE" etc.)
+    //Wind direction is descriptive ("N", "SSE" etc.); if there's no wind, you should send nonesense string like "NOW" (NO Wind)
     //Hemisphere true for the northern, false for the southern
   
     //getForecast function returns the descriptive explanation of the weather (e.g. "Fine weather")
