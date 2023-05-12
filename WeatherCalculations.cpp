@@ -94,7 +94,7 @@ uint8_t Weather::getComfort(double heatIndex) {
 
 char* Weather::getForecast (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
-  double constant = (pressureRange / 22);
+  double constant = (pressureRange / 22.0);
   boolean z_season = false;
   if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
 
@@ -216,7 +216,7 @@ char* Weather::getForecast (double currentPressure, const int month, const char 
 
 int Weather::getForecastSeverity (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
-  double constant = (pressureRange / 22);
+  double constant = (pressureRange / 22.0);
   boolean z_season = false;
   if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
 
