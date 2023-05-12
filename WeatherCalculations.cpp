@@ -45,7 +45,7 @@ double Weather::getHeatIndex(double Temperature, double Humidity) {
   if (Humidity < 13.0 && Temperature > 80.0 && Temperature < 112.0) {
     double i = Temperature - 95.0;
 
-    Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - abs(i)) / 17.0);
+    Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - fabs(i)) / 17.0);
     HeatIndex -= Adjustment;
   }
   else if (Humidity > 85.0 && Temperature > 80.0 && Temperature < 87.0) {
