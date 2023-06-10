@@ -45,7 +45,7 @@ double Weather::getHeatIndex(double Temperature, double Humidity) {
   if (Humidity < 13.0 && Temperature > 80.0 && Temperature < 112.0) {
     double i = Temperature - 95.0;
 
-    Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - fabs(i)) / 17.0);
+    Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - abs(i)) / 17.0);
     HeatIndex -= Adjustment;
   }
   else if (Humidity > 85.0 && Temperature > 80.0 && Temperature < 87.0) {
@@ -72,29 +72,37 @@ double Weather::getWindChill(double Temperature, double WindSpeed) {
 };
 
 uint8_t Weather::getComfort(double heatIndex) {
-  if (heatIndex >= 20.0 && heatIndex <= 23.0) {
-    return 1; //Uncomfortable
-  }
-  else if (heatIndex > 23.0 && heatIndex <= 26.0) {
-    return 2; //Comfortable
-  }
-  else if (heatIndex > 26.0 && heatIndex <= 29.0) {
-    return 3; //Some discomfort
-  }
-  else if (heatIndex > 29.0 && heatIndex <= 39.0) {
-    return 4; //Hot feeling
-  }
-  else if (heatIndex > 39.0 && heatIndex <= 45.0) {
-    return 5; //Great discomfort; avoid exertion
-  }
-  else if (heatIndex > 45.0) {
-    return 6; //Dangerous; probable heat stroke
-  }
+  if (heatIndex >= 20.0 && heatIndex <= 23.0) return 1; //Uncomfortable
+  else if (heatIndex > 23.0 && heatIndex <= 26.0) return 2; //Comfortable
+  else if (heatIndex > 26.0 && heatIndex <= 29.0) return 3; //Some discomfort
+  else if (heatIndex > 29.0 && heatIndex <= 39.0) return 4; //Hot feeling
+  else if (heatIndex > 39.0 && heatIndex <= 45.0) return 5; //Great discomfort; avoid exertion
+  else if (heatIndex > 45.0) return 6; //Dangerous; probable heat stroke
+}
+
+uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
+  uint16_t AQI_25, AQI_10;
+
+  if (PM25 >= 0 && PM25 <= 12) AQI_25 = map(PM25, 0, 12, 0, 50);
+  else if (PM25 >= 13 && PM25 <= 35) AQI_25 = map(PM25, 13, 35, 51, 100);
+  else if (PM25 >= 36 && PM25 <= 55) AQI_25 = map(PM25, 36, 55, 101, 150);
+  else if (PM25 >= 56 && PM25 <= 150) AQI_25 = map(PM25, 56, 150, 151, 200);
+  else if (PM25 >= 151 && PM25 <= 250) AQI_25 = map(PM25, 151, 250, 201, 300);
+  else if (PM25 >= 251 && PM25 <= 500) AQI_25 = map(PM25, 251, 500, 301, 500);
+
+  if (PM10 >= 0 && PM10 <= 54) AQI_10 = map(PM10, 0, 54, 0, 50);
+  else if (PM10 >= 55 && PM10 <= 154) AQI_10 = map(PM10, 55, 154, 51, 100);
+  else if (PM10 >= 155 && PM10 <= 254) AQI_10 = map(PM10, 155, 254, 101, 150);
+  else if (PM10 >= 255 && PM10 <= 354) AQI_10 = map(PM10, 255, 354, 151, 200);
+  else if (PM10 >= 355 && PM10 <= 424) AQI_10 = map(PM10, 355, 424, 201, 300);
+  else if (PM10 >= 425 && PM10 <= 604) AQI_10 = map(PM10, 425, 604, 301, 500);
+
+  return max(AQI_25, AQI_10);
 }
 
 char* Weather::getForecast (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
-  double constant = (pressureRange / 22.0);
+  double constant = (pressureRange / 22);
   boolean z_season = false;
   if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
 
@@ -216,7 +224,7 @@ char* Weather::getForecast (double currentPressure, const int month, const char 
 
 int Weather::getForecastSeverity (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
-  double constant = (pressureRange / 22.0);
+  double constant = (pressureRange / 22);
   boolean z_season = false;
   if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
 
