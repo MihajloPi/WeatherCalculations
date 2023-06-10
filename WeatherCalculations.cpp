@@ -45,7 +45,7 @@ double Weather::getHeatIndex(double Temperature, double Humidity) {
   if (Humidity < 13.0 && Temperature > 80.0 && Temperature < 112.0) {
     double i = Temperature - 95.0;
 
-    Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - abs(i)) / 17.0);
+    Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - fabs(i)) / 17.0);
     HeatIndex -= Adjustment;
   }
   else if (Humidity > 85.0 && Temperature > 80.0 && Temperature < 87.0) {
@@ -102,7 +102,7 @@ uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
 
 char* Weather::getForecast (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
-  double constant = (pressureRange / 22);
+  double constant = (pressureRange / 22.0);
   boolean z_season = false;
   if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
 
@@ -224,7 +224,7 @@ char* Weather::getForecast (double currentPressure, const int month, const char 
 
 int Weather::getForecastSeverity (double currentPressure, const int month, const char windDirection[4], const int pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
-  double constant = (pressureRange / 22);
+  double constant = (pressureRange / 22.0);
   boolean z_season = false;
   if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
 
