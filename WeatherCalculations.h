@@ -31,7 +31,7 @@ class Weather {
     //getForecast function returns the descriptive explanation of the weather (e.g. "Fine weather")
     //getForecastSeverity does the same but returns the index in the forecast array
     char* getForecast (double currentPressure, const uint8_t month, const char windDirection[4], const uint8_t pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950);
-    int getForecastSeverity (double currentPressure, const uint8_t month, const char windDirection[4], const uint8_t pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950);
+    uint8_t getForecastSeverity (double currentPressure, const uint8_t month, const char windDirection[4], const uint8_t pressureTrend, const boolean hemisphere = true, const double highestPressureEverRecorded = 1050, const double lowestPressureEverRecorded = 950);
 
   private:
 };
