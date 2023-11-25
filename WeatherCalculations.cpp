@@ -142,12 +142,7 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
   }  // END North / South
   if (currentPressure == highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
   uint8_t forecastOption = floor((currentPressure - lowestPressureEverRecorded) / constant);
-
-  if (forecastOption < 0) {
-    forecastOption = 0;
-  } else if (forecastOption > 21) {
-    forecastOption = 21;
-  }
+  forecastOption = constrain(forecastOption, 0, 21);
 
   uint8_t outputForecast;
 
@@ -167,11 +162,9 @@ char* Weather::getForecast(double currentPressure, const uint8_t month, WindDire
   uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
 
   static char outputForecast[57];
-  strcpy(outputForecast, "");
+  strcpy(outputForecast, ""); // Initialise an empty char array
 
-  if (forecastOption == 0) {
-    strcpy(outputForecast, "Exceptional Weather, ");
-  } else if (forecastOption == 21) {
+  if (forecastOption == 0 || forecastOption == 21) {
     strcpy(outputForecast, "Exceptional Weather, ");
   }
 
