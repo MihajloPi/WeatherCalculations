@@ -162,7 +162,6 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
   return outputForecast;
 }
 
-
 char* Weather::getForecast(double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
 
   uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
