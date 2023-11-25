@@ -1,5 +1,3 @@
-#include "Arduino.h"
-#include <map>
 #include "WeatherCalculations.h"
 
 Weather::Weather() {}
