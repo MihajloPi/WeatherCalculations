@@ -2,6 +2,7 @@
 #define WeatherCalculations_h
 
 #include "Arduino.h"
+#include <map>
 
 class Weather {
   public:
@@ -11,6 +12,44 @@ class Weather {
     const uint8_t steady_options[22] = {25, 25, 25, 25, 25, 25, 23, 23, 22, 18, 15, 13, 10, 4, 1, 1, 0, 0, 0, 0, 0, 0};
     const uint8_t fall_options[22] = {25, 25, 25, 25, 25, 25, 25, 25, 23, 23, 21, 20, 17, 14, 7, 3, 1, 1, 1, 0, 0, 0};
     enum WindDirection {N, NNE, NE, ENE, E, ESE, SE, SSE, S, SSW, SW, WSW, W, WNW, NW, NNW};
+
+    std::map<WindDirection, double> correctionFactorsNorthHemisphere = {
+    {N, 0.06},
+    {NNE, 0.05},
+    {NE, 0.05},
+    {ENE, 0.02},
+    {E, -0.005},
+    {ESE, -0.02},
+    {SE, -0.05},
+    {SSE, -0.085},
+    {S, -0.12},
+    {SSW, -0.1},
+    {SW, -0.06},
+    {WSW, -0.045},
+    {W, -0.03},
+    {WNW, -0.005},
+    {NW, 0.015},
+    {NNW, 0.03}
+  };
+
+  std::map<WindDirection, double> correctionFactorsSouthHemisphere = {
+    {S, 0.06},
+    {SSW, 0.06},
+    {SW, 0.05},
+    {WSW, 0.02},
+    {W, -0.005},
+    {WNW, -0.02},
+    {NW, -0.05},
+    {NNW, -0.085},
+    {N, -0.12},
+    {NNE, -0.1},
+    {NE, -0.1},
+    {ENE, -0.06},
+    {E, -0.045},
+    {ESE, -0.03},
+    {SE, -0.005},
+    {SSE, 0.015}
+  };
 
     Weather();
     double tempFtoC(double Temperature);

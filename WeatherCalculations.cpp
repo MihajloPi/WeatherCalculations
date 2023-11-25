@@ -116,57 +116,8 @@ char* Weather::getForecast (double currentPressure, const uint8_t month, WindDir
   if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
 
   if (hemisphere == 1) {                                      // North hemisphere
-    switch (windDirection) {
-      case N:
-        currentPressure += 0.06 * pressureRange;
-        break;
-      case NNE:
-        currentPressure += 0.05 * pressureRange;
-        break;
-      case NE:
-        currentPressure += 0.05 * pressureRange;
-        break;
-      case ENE:
-        currentPressure += 0.02 * pressureRange;
-        break;
-      case E:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case ESE:
-        currentPressure -= 0.02 * pressureRange;
-        break;
-      case SE:
-        currentPressure -= 0.05 * pressureRange;
-        break;
-      case SSE:
-        currentPressure -= 0.085 * pressureRange;
-        break;
-      case S:
-        currentPressure -= 0.12 * pressureRange;
-        break;
-      case SSW:
-        currentPressure -= 0.1 * pressureRange;
-        break;
-      case SW:
-        currentPressure -= 0.06 * pressureRange;
-        break;
-      case WSW:
-        currentPressure -= 0.045 * pressureRange;
-        break;
-      case W:
-        currentPressure -= 0.03 * pressureRange;
-        break;
-      case WNW:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case NW:
-        currentPressure += 0.015 * pressureRange;
-        break;
-      case NNW:
-        currentPressure += 0.03 * pressureRange;
-        break;
-      default:
-        break;
+    if (correctionFactorsNorthHemisphere.find(windDirection) != correctionFactorsNorthHemisphere.end()) {
+      currentPressure += correctionFactorsNorthHemisphere[windDirection] * pressureRange;
     }
 
     if (z_season == 1) {    // if Summer
@@ -176,61 +127,11 @@ char* Weather::getForecast (double currentPressure, const uint8_t month, WindDir
         currentPressure -= 0.07 * pressureRange;
       }
     }
-  }
-
-  else {                                                      // must be South hemisphere
-    switch (windDirection) {
-      case S:
-        currentPressure += 0.06 * pressureRange;
-        break;
-      case SSW:
-        currentPressure += 0.06 * pressureRange;
-        break;
-      case SW:
-        currentPressure += 0.05 * pressureRange;
-        break;
-      case WSW:
-        currentPressure += 0.02 * pressureRange;
-        break;
-      case W:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case WNW:
-        currentPressure -= 0.02 * pressureRange;
-        break;
-      case NW:
-        currentPressure -= 0.05 * pressureRange;
-        break;
-      case NNW:
-        currentPressure -= 0.085 * pressureRange;
-        break;
-      case N:
-        currentPressure -= 0.12 * pressureRange;
-        break;
-      case NNE:
-        currentPressure -= 0.1 * pressureRange;
-        break;
-      case NE:
-        currentPressure -= 0.1 * pressureRange;
-        break;
-      case ENE:
-        currentPressure -= 0.06 * pressureRange;
-        break;
-      case E:
-        currentPressure -= 0.045 * pressureRange;
-        break;
-      case ESE:
-        currentPressure -= 0.03 * pressureRange;
-        break;
-      case SE:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case SSE:
-        currentPressure += 0.015 * pressureRange;
-        break;
-      default:
-        break;
+  } else {                                                      // must be South hemisphere
+    if (correctionFactorsSouthHemisphere.find(windDirection) != correctionFactorsSouthHemisphere.end()) {
+      currentPressure += correctionFactorsSouthHemisphere[windDirection] * pressureRange;
     }
+
     if (z_season == 0) {                                // if Winter
       if (pressureTrend == 1) {                         // rising
         currentPressure += 0.07 * pressureRange;
@@ -239,9 +140,10 @@ char* Weather::getForecast (double currentPressure, const uint8_t month, WindDir
       }
     }
   }   // END North / South
-
   if (currentPressure == highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
   uint8_t forecastOption = floor((currentPressure - lowestPressureEverRecorded) / constant);
+
+  //uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
 
   static char outputForecast[57];
   strcpy(outputForecast, "");
@@ -255,6 +157,14 @@ char* Weather::getForecast (double currentPressure, const uint8_t month, WindDir
     strcpy(outputForecast, "Exceptional Weather, ");
   }
 
+/*
+  if (forecastOption == 0) {
+    strcpy(outputForecast, "Exceptional Weather, ");
+  }
+  if (forecastOption == 21) {
+    strcpy(outputForecast, "Exceptional Weather, ");
+  }
+*/
   if (pressureTrend == 1) {                                                           // rising
     strcat(outputForecast, forecast[rise_options[forecastOption]]);
   }
