@@ -42,18 +42,15 @@ double Weather::getHeatIndex(double Temperature, double Humidity) {
   double HeatIndex = -42.379 + (2.04901523 * Temperature) + (10.14333127 * Humidity) + (-0.22475541 * Temperature * Humidity) + (-0.00683783 * Temperature * Temperature) + (-0.05481717 * Humidity * Humidity) + (0.00122874 * Temperature * Temperature * Humidity) + (0.00085282 * Temperature * Humidity * Humidity) + (-0.00000199 * Temperature * Temperature * Humidity * Humidity);
 
   if (Humidity < 13.0 && Temperature > 80.0 && Temperature < 112.0) {
-    double i = Temperature - 95.0;
-
-    Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - fabs(i)) / 17.0);
+    Adjustment = ((13.0 - Humidity) * 0.25) * sqrt((17.0 - fabs(Temperature - 95.0;)) / 17.0);
     HeatIndex -= Adjustment;
   } else if (Humidity > 85.0 && Temperature > 80.0 && Temperature < 87.0) {
-    Adjustment = ((Humidity - 85.0) / 10.0) * ((87.0 - Temperature) / 5.0);
+    Adjustment = ((Humidity - 85.0) * 0.1) * ((87.0 - Temperature) * 0.2);
     HeatIndex += Adjustment;
-  }
-
-  else if (HeatIndex < 80.0) {
+  } else if (HeatIndex < 80.0) {
     HeatIndex = 0.5 * (Temperature + 61.0 + ((Temperature - 68.0) * 1.2) + (Humidity * 0.094));
   }
+
   return tempFtoC(HeatIndex);
 };
 
@@ -62,10 +59,15 @@ double Weather::getHumidex(double Temperature, double DewPoint) {
 };
 
 double Weather::getWindChill(double Temperature, double WindSpeed) {
-  double WindChill;
-  WindSpeed *= 0.621371;
+  Temperature = tempCtoF(Temperature);
+  WindSpeed *= 0.621371; // Converts wind speed from km/h to mph
 
-  WindChill = (13.12 + 0.6215 * Temperature - 11.37 * pow(WindSpeed, 0.16) + 0.3965 * Temperature * pow(WindSpeed, 0.16));
+  if (Temperature < 50.0 && WindSpeed > 3.0) {
+    double WindChill = tempFtoC(35.74 + (0.6215 * Temperature) - (35.75 * pow(WindSpeed, 0.16)) + (0.4275 * Temperature * pow(WindSpeed, 0.16)));
+  } else {
+    WindChill = tempFtoC(Temperature);
+  }
+//  WindChill = (13.12 + 0.6215 * Temperature - 11.37 * pow(WindSpeed, 0.16) + 0.3965 * Temperature * pow(WindSpeed, 0.16));
   return WindChill;
 };
 
