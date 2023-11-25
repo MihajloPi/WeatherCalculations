@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include <map>
 #include "WeatherCalculations.h"
 
 Weather::Weather() {}
@@ -8,7 +9,7 @@ double Weather::tempCtoF(double Temperature) {
 };
 
 double Weather::tempFtoC(double Temperature) {
-  return (Temperature - 32.0) * 9 * 0.2; // Multiplying with 9*0.2 is the same as dividing by 1.8
+  return (Temperature - 32.0) / 1.8;
 };
 
 double Weather::getSeaLevelPressure(double AirPressure, double Altitude) {
@@ -19,20 +20,20 @@ double Weather::getAltitude(double AirPressure, double SeaLevelPressure) {
   return 44330.0 * (1.0 - pow((AirPressure / SeaLevelPressure), (1.0 / 5.225)));
 };
 
-double Weather::getDewPoint(double Temperature, double Humidity) { //Temperature is in celsius so make sure to convert fahrenheit to celsius!
+double Weather::getDewPoint(double Temperature, double Humidity) {  //Temperature is in celsius so make sure to convert fahrenheit to celsius!
   // (1) Saturation Vapor Pressure = ESGG(T)
   double RATIO = 373.15 / (273.15 + Temperature);
   double RHS = -7.90298 * (RATIO - 1.0);
   RHS += 5.02808 * log10(RATIO);
-  RHS += -1.3816e-7 * (pow(10.0, (11.344 * (1.0 - 1.0 / RATIO))) - 1.0) ;
-  RHS += 8.1328e-3 * (pow(10.0, (-3.49149 * (RATIO - 1.0))) - 1.0) ;
+  RHS += -1.3816e-7 * (pow(10.0, (11.344 * (1.0 - 1.0 / RATIO))) - 1.0);
+  RHS += 8.1328e-3 * (pow(10.0, (-3.49149 * (RATIO - 1.0))) - 1.0);
   RHS += log10(1013.246);
 
   // factor -3 is to adjust units - Vapor Pressure SVP * humidity
   double VP = pow(10.0, RHS - 3.0) * Humidity;
 
   // (2) DEWPOINT = F(Vapor Pressure)
-  double T = log(VP / 0.61078); // temp var
+  double T = log(VP / 0.61078);  // temp var
   return (241.88 * T) / (17.558 - T);
 };
 
@@ -47,8 +48,7 @@ double Weather::getHeatIndex(double Temperature, double Humidity) {
 
     Adjustment = ((13.0 - Humidity) / 4.0) * sqrt((17.0 - fabs(i)) / 17.0);
     HeatIndex -= Adjustment;
-  }
-  else if (Humidity > 85.0 && Temperature > 80.0 && Temperature < 87.0) {
+  } else if (Humidity > 85.0 && Temperature > 80.0 && Temperature < 87.0) {
     Adjustment = ((Humidity - 85.0) / 10.0) * ((87.0 - Temperature) / 5.0);
     HeatIndex += Adjustment;
   }
@@ -72,12 +72,12 @@ double Weather::getWindChill(double Temperature, double WindSpeed) {
 };
 
 uint8_t Weather::getComfort(double heatIndex) {
-  if (heatIndex <= 23.0) return 1; //Uncomfortable
-  else if (heatIndex <= 26.0) return 2; //Comfortable
-  else if (heatIndex <= 29.0) return 3; //Some discomfort
-  else if (heatIndex <= 39.0) return 4; //Hot feeling
-  else if (heatIndex <= 45.0) return 5; //Great discomfort; avoid exertion
-  else return 6; //Dangerous; probable heat stroke
+  if (heatIndex <= 23.0) return 1;       //Uncomfortable
+  else if (heatIndex <= 26.0) return 2;  //Comfortable
+  else if (heatIndex <= 29.0) return 3;  //Some discomfort
+  else if (heatIndex <= 39.0) return 4;  //Hot feeling
+  else if (heatIndex <= 45.0) return 5;  //Great discomfort; avoid exertion
+  else return 6;                         //Dangerous; probable heat stroke
 }
 
 /**
@@ -109,223 +109,79 @@ constexpr uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
   return max(AQI_25, AQI_10);
 }
 
-char* Weather::getForecast (double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
+uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
   double constant = (pressureRange / 22.0);
   boolean z_season = false;
-  if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
+  if (month >= 4 && month <= 9) z_season = true;  // true if 'Summer'
 
-  if (hemisphere == 1) {                                      // North hemisphere
+  if (hemisphere == 1) {  // North hemisphere
     if (correctionFactorsNorthHemisphere.find(windDirection) != correctionFactorsNorthHemisphere.end()) {
       currentPressure += correctionFactorsNorthHemisphere[windDirection] * pressureRange;
     }
 
-    if (z_season == 1) {    // if Summer
-      if (pressureTrend == 1) {   // rising
+    if (z_season == 1) {         // if Summer
+      if (pressureTrend == 1) {  // rising
         currentPressure += 0.07 * pressureRange;
       } else if (pressureTrend == 2) {  //  falling
         currentPressure -= 0.07 * pressureRange;
       }
     }
-  } else {                                                      // must be South hemisphere
+  } else {  // must be South hemisphere
     if (correctionFactorsSouthHemisphere.find(windDirection) != correctionFactorsSouthHemisphere.end()) {
       currentPressure += correctionFactorsSouthHemisphere[windDirection] * pressureRange;
     }
 
-    if (z_season == 0) {                                // if Winter
-      if (pressureTrend == 1) {                         // rising
+    if (z_season == 0) {         // if Winter
+      if (pressureTrend == 1) {  // rising
         currentPressure += 0.07 * pressureRange;
-      } else if (pressureTrend == 2) {                  // falling
+      } else if (pressureTrend == 2) {  // falling
         currentPressure -= 0.07 * pressureRange;
       }
     }
-  }   // END North / South
+  }  // END North / South
   if (currentPressure == highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
   uint8_t forecastOption = floor((currentPressure - lowestPressureEverRecorded) / constant);
 
-  //uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
-
-  static char outputForecast[57];
-  strcpy(outputForecast, "");
-
-  if (forecastOption < 0) {
-    forecastOption = 0;
-    strcpy(outputForecast, "Exceptional Weather, ");
-  }
-  if (forecastOption > 21) {
-    forecastOption = 21;
-    strcpy(outputForecast, "Exceptional Weather, ");
-  }
-
-/*
-  if (forecastOption == 0) {
-    strcpy(outputForecast, "Exceptional Weather, ");
-  }
-  if (forecastOption == 21) {
-    strcpy(outputForecast, "Exceptional Weather, ");
-  }
-*/
-  if (pressureTrend == 1) {                                                           // rising
-    strcat(outputForecast, forecast[rise_options[forecastOption]]);
-  }
-  else if (pressureTrend == 2) {                                                      // falling
-    strcat(outputForecast, forecast[fall_options[forecastOption]]);
-  }
-  else {                                                                              // must be 'steady'
-    strcat(outputForecast, forecast[steady_options[forecastOption]]);
-  }
-
-  return outputForecast;
-}
-
-uint8_t Weather::getForecastSeverity (double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
-  double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
-  double constant = (pressureRange / 22.0);
-  boolean z_season = false;
-  if (month >= 4 && month <= 9) z_season = true;              // true if 'Summer'
-
-  if (hemisphere == 1) {                                      // North hemisphere
-    switch (windDirection) {
-      case N:
-        currentPressure += 0.06 * pressureRange;
-        break;
-      case NNE:
-        currentPressure += 0.05 * pressureRange;
-        break;
-      case NE:
-        currentPressure += 0.05 * pressureRange;
-        break;
-      case ENE:
-        currentPressure += 0.02 * pressureRange;
-        break;
-      case E:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case ESE:
-        currentPressure -= 0.02 * pressureRange;
-        break;
-      case SE:
-        currentPressure -= 0.05 * pressureRange;
-        break;
-      case SSE:
-        currentPressure -= 0.085 * pressureRange;
-        break;
-      case S:
-        currentPressure -= 0.12 * pressureRange;
-        break;
-      case SSW:
-        currentPressure -= 0.1 * pressureRange;
-        break;
-      case SW:
-        currentPressure -= 0.06 * pressureRange;
-        break;
-      case WSW:
-        currentPressure -= 0.045 * pressureRange;
-        break;
-      case W:
-        currentPressure -= 0.03 * pressureRange;
-        break;
-      case WNW:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case NW:
-        currentPressure += 0.015 * pressureRange;
-        break;
-      case NNW:
-        currentPressure += 0.03 * pressureRange;
-        break;
-      default:
-        break;
-    }
-
-    if (z_season == 1) {    // if Summer
-      if (pressureTrend == 1) {   // rising
-        currentPressure += 0.07 * pressureRange;
-      } else if (pressureTrend == 2) {  //  falling
-        currentPressure -= 0.07 * pressureRange;
-      }
-    }
-  }
-
-  else {                                                      // must be South hemisphere
-    switch (windDirection) {
-      case S:
-        currentPressure += 0.06 * pressureRange;
-        break;
-      case SSW:
-        currentPressure += 0.06 * pressureRange;
-        break;
-      case SW:
-        currentPressure += 0.05 * pressureRange;
-        break;
-      case WSW:
-        currentPressure += 0.02 * pressureRange;
-        break;
-      case W:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case WNW:
-        currentPressure -= 0.02 * pressureRange;
-        break;
-      case NW:
-        currentPressure -= 0.05 * pressureRange;
-        break;
-      case NNW:
-        currentPressure -= 0.085 * pressureRange;
-        break;
-      case N:
-        currentPressure -= 0.12 * pressureRange;
-        break;
-      case NNE:
-        currentPressure -= 0.1 * pressureRange;
-        break;
-      case NE:
-        currentPressure -= 0.1 * pressureRange;
-        break;
-      case ENE:
-        currentPressure -= 0.06 * pressureRange;
-        break;
-      case E:
-        currentPressure -= 0.045 * pressureRange;
-        break;
-      case ESE:
-        currentPressure -= 0.03 * pressureRange;
-        break;
-      case SE:
-        currentPressure -= 0.005 * pressureRange;
-        break;
-      case SSE:
-        currentPressure += 0.015 * pressureRange;
-        break;
-      default:
-        break;
-    }
-    if (z_season == 0) {                                // if Winter
-      if (pressureTrend == 1) {                         // rising
-        currentPressure += 0.07 * pressureRange;
-      } else if (pressureTrend == 2) {                  // falling
-        currentPressure -= 0.07 * pressureRange;
-      }
-    }
-  }   // END North / South
-
-  if (currentPressure == highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
-  uint8_t forecastOption = floor((currentPressure - lowestPressureEverRecorded) / constant);
-  uint8_t outputForecast;
   if (forecastOption < 0) {
     forecastOption = 0;
   } else if (forecastOption > 21) {
     forecastOption = 21;
   }
 
-  if (pressureTrend == 1) {                                                           // rising
+  uint8_t outputForecast;
+
+  if (pressureTrend == 1) {  // rising
     outputForecast = rise_options[forecastOption];
-  }
-  else if (pressureTrend == 2) {                                                      // falling
+  } else if (pressureTrend == 2) {  // falling
     outputForecast = fall_options[forecastOption];
-  }
-  else {                                                                              // must be 'steady'
+  } else {  // must be 'steady'
     outputForecast = steady_options[forecastOption];
+  }
+
+  return outputForecast;
+}
+
+
+char* Weather::getForecast(double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
+
+  uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
+
+  static char outputForecast[57];
+  strcpy(outputForecast, "");
+
+  if (forecastOption == 0) {
+    strcpy(outputForecast, "Exceptional Weather, ");
+  } else if (forecastOption == 21) {
+    strcpy(outputForecast, "Exceptional Weather, ");
+  }
+
+  if (pressureTrend == 1) {  // rising
+    strcat(outputForecast, forecast[rise_options[forecastOption]]);
+  } else if (pressureTrend == 2) {  // falling
+    strcat(outputForecast, forecast[fall_options[forecastOption]]);
+  } else {  // must be 'steady'
+    strcat(outputForecast, forecast[steady_options[forecastOption]]);
   }
 
   return outputForecast;
