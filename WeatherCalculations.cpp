@@ -18,7 +18,7 @@ double Weather::getAltitude(double AirPressure, double SeaLevelPressure) {
   return 44330.0 * (1.0 - pow((AirPressure / SeaLevelPressure), (1.0 / 5.225)));
 };
 
-double Weather::getDewPoint(double Temperature, double Humidity) {  //Temperature is in celsius so make sure to convert fahrenheit to celsius!
+double Weather::getDewPoint(double Temperature, double Humidity) {  //Temperature is in Celsius so make sure to convert Fahrenheit to Celsius!
   // (1) Saturation Vapor Pressure = ESGG(T)
   double RATIO = 373.15 / (273.15 + Temperature);
   double RHS = -7.90298 * (RATIO - 1.0);
@@ -42,7 +42,7 @@ double Weather::getHeatIndex(double Temperature, double Humidity) {
   double HeatIndex = -42.379 + (2.04901523 * Temperature) + (10.14333127 * Humidity) + (-0.22475541 * Temperature * Humidity) + (-0.00683783 * Temperature * Temperature) + (-0.05481717 * Humidity * Humidity) + (0.00122874 * Temperature * Temperature * Humidity) + (0.00085282 * Temperature * Humidity * Humidity) + (-0.00000199 * Temperature * Temperature * Humidity * Humidity);
 
   if (Humidity < 13.0 && Temperature > 80.0 && Temperature < 112.0) {
-    Adjustment = ((13.0 - Humidity) * 0.25) * sqrt((17.0 - fabs(Temperature - 95.0;)) / 17.0);
+    Adjustment = ((13.0 - Humidity) * 0.25) * sqrt((17.0 - fabs(Temperature - 95.0)) / 17.0);
     HeatIndex -= Adjustment;
   } else if (Humidity > 85.0 && Temperature > 80.0 && Temperature < 87.0) {
     Adjustment = ((Humidity - 85.0) * 0.1) * ((87.0 - Temperature) * 0.2);
@@ -61,9 +61,10 @@ double Weather::getHumidex(double Temperature, double DewPoint) {
 double Weather::getWindChill(double Temperature, double WindSpeed) {
   Temperature = tempCtoF(Temperature);
   WindSpeed *= 0.621371; // Converts wind speed from km/h to mph
+  double WindChill;
 
   if (Temperature < 50.0 && WindSpeed > 3.0) {
-    double WindChill = tempFtoC(35.74 + (0.6215 * Temperature) - (35.75 * pow(WindSpeed, 0.16)) + (0.4275 * Temperature * pow(WindSpeed, 0.16)));
+    WindChill = tempFtoC(35.74 + (0.6215 * Temperature) - (35.75 * pow(WindSpeed, 0.16)) + (0.4275 * Temperature * pow(WindSpeed, 0.16)));
   } else {
     WindChill = tempFtoC(Temperature);
   }
@@ -86,7 +87,7 @@ uint8_t Weather::getComfort(double heatIndex) {
  * @param PM10 The PM10 value.
  * @return The calculated AQI value.
  */
-constexpr uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
+uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
   uint16_t AQI_25, AQI_10;
 
   //Calculate AQI for PM2.5
