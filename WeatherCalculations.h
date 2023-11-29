@@ -49,7 +49,7 @@ public:
     { WNW, -0.005 },
     { NW, 0.015 },
     { NNW, 0.03 },
-	  { NOW, 0.0 }
+    { NOW, 0.0 }
   };
 
   // Correction factors for wind direction in the southern hemisphere
@@ -70,7 +70,7 @@ public:
     { ESE, -0.03 },
     { SE, -0.005 },
     { SSE, 0.015 },
-	  { NOW, 0.0 }
+    { NOW, 0.0 }
   };
 
 
@@ -87,7 +87,7 @@ public:
   uint16_t getAQI(uint16_t PM25, uint16_t PM10);
   //Pressure trend variable: 1 for rising, 2 for falling, everything else is by default steady
   //Months are 1-12
-  //Wind direction is descriptive ("N", "SSE" etc.); if there's no wind, you should send nonesense string like "NOW" (NO Wind)
+  //Wind direction is descriptive ("N", "SSE" etc.); if there's no wind, you should send nonsense string like "NOW" (NO Wind)
   //Hemisphere true for the northern, false for the southern
 
   //getForecastSeverity does the same but returns the index in the forecast array
