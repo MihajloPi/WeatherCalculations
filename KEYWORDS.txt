@@ -10,5 +10,5 @@ getHumidex	KEYWORD2
 getWindChill	KEYWORD2
 getAQI  KEYWORD2
 getComfort	KEYWORD2
-getForecast	KEYWORD2
 getForecastSeverity	KEYWORD2
+getForecast	KEYWORD2
