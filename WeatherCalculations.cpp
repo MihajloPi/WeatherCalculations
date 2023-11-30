@@ -37,7 +37,7 @@ double Weather::getDewPoint(double Temperature, double Humidity) {  //Temperatur
 
 double Weather::getHeatIndex(double Temperature, double Humidity) {
   Temperature = tempCtoF(Temperature);
-  double Adjustment;
+  double Adjustment = 0;
 
   double HeatIndex = -42.379 + (2.04901523 * Temperature) + (10.14333127 * Humidity) + (-0.22475541 * Temperature * Humidity) + (-0.00683783 * Temperature * Temperature) + (-0.05481717 * Humidity * Humidity) + (0.00122874 * Temperature * Temperature * Humidity) + (0.00085282 * Temperature * Humidity * Humidity) + (-0.00000199 * Temperature * Temperature * Humidity * Humidity);
 
@@ -61,7 +61,7 @@ double Weather::getHumidex(double Temperature, double DewPoint) {
 double Weather::getWindChill(double Temperature, double WindSpeed) {
   Temperature = tempCtoF(Temperature);
   WindSpeed *= 0.621371; // Converts wind speed from km/h to mph
-  double WindChill;
+  double WindChill = 0;
 
   if (Temperature < 50.0 && WindSpeed > 3.0) {
     WindChill = tempFtoC(35.74 + (0.6215 * Temperature) - (35.75 * pow(WindSpeed, 0.16)) + (0.4275 * Temperature * pow(WindSpeed, 0.16)));
@@ -88,7 +88,7 @@ uint8_t Weather::getComfort(double heatIndex) {
  * @return The calculated AQI value.
  */
 uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
-  uint16_t AQI_25, AQI_10;
+  uint16_t AQI_25 = 0, AQI_10 = 0;
 
   //Calculate AQI for PM2.5
   if (PM25 >= 0 && PM25 <= 12) AQI_25 = map(PM25, 0, 12, 0, 50);
