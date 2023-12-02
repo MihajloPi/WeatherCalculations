@@ -12,64 +12,66 @@ public:
   const uint8_t steady_options[22] = { 25, 25, 25, 25, 25, 25, 23, 23, 22, 18, 15, 13, 10, 4, 1, 1, 0, 0, 0, 0, 0, 0 };
   const uint8_t fall_options[22] = { 25, 25, 25, 25, 25, 25, 25, 25, 23, 23, 21, 20, 17, 14, 7, 3, 1, 1, 1, 0, 0, 0 };
 
-  enum WindDirection { N,
-                       NNE,
-                       NE,
-                       ENE,
-                       E,
-                       ESE,
-                       SE,
-                       SSE,
-                       S,
-                       SSW,
-                       SW,
-                       WSW,
-                       W,
-                       WNW,
-                       NW,
-                       NNW,
-                       NOW};
+  enum WindDirection {
+      N,    // North
+      NNE,  // North-Northeast
+      NE,   // Northeast
+      ENE,  // East-Northeast
+      E,    // East
+      ESE,  // East-Southeast
+      SE,   // Southeast
+      SSE,  // South-Southeast
+      S,    // South
+      SSW,  // South-Southwest
+      SW,   // Southwest
+      WSW,  // West-Southwest
+      W,    // West
+      WNW,  // West-Northwest
+      NW,   // Northwest
+      NNW,  // North-Northwest
+      NOW   // No Wind (or an invalid direction)
+  };
 
 
   // Correction factors for wind direction in the northern hemisphere
   std::map<WindDirection, double> correctionFactorsNorthHemisphere = {
-    { N, 0.06 },
-    { NNE, 0.05 },
-    { NE, 0.05 },
-    { ENE, 0.02 },
-    { E, -0.005 },
-    { ESE, -0.02 },
-    { SE, -0.05 },
-    { SSE, -0.085 },
-    { S, -0.12 },
-    { SSW, -0.1 },
-    { SW, -0.06 },
-    { WSW, -0.045 },
-    { W, -0.03 },
-    { WNW, -0.005 },
-    { NW, 0.015 },
-    { NNW, 0.03 },
+    {N, 0.06},
+    {NNE, 0.05},
+    {NE, 0.05},
+    {ENE, 0.02},
+    {E, -0.005},
+    {ESE, -0.02},
+    {SE, -0.05},
+    {SSE, -0.085},
+    {S, -0.12},
+    {SSW, -0.1},
+    {SW, -0.06},
+    {WSW, -0.045},
+    {W, -0.03},
+    {WNW, -0.005},
+    {NW, 0.015},
+    {NNW, 0.03}
     { NOW, 0.0 }
   };
 
   // Correction factors for wind direction in the southern hemisphere
   std::map<WindDirection, double> correctionFactorsSouthHemisphere = {
-    { S, 0.06 },
-    { SSW, 0.06 },
-    { SW, 0.05 },
-    { WSW, 0.02 },
-    { W, -0.005 },
-    { WNW, -0.02 },
-    { NW, -0.05 },
-    { NNW, -0.085 },
-    { N, -0.12 },
-    { NNE, -0.1 },
-    { NE, -0.1 },
-    { ENE, -0.06 },
-    { E, -0.045 },
-    { ESE, -0.03 },
-    { SE, -0.005 },
-    { SSE, 0.015 },
+    {S, 0.06},
+    {SSW, 0.05},
+    {SW, 0.05},
+    {WSW, 0.02},
+    {W, -0.005},
+    {WNW, -0.02},
+    {NW, -0.05},
+    {NNW, -0.085},
+    {N, -0.12},
+    {NNE, -0.1},
+    {NE, -0.06},
+    {ENE, -0.045},
+    {E, -0.03},
+    {ESE, -0.005},
+    {SE, 0.015},
+    {SSE, 0.03}
     { NOW, 0.0 }
   };
 
