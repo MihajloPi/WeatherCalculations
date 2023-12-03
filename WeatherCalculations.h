@@ -34,7 +34,7 @@ public:
 
 
   // Correction factors for wind direction
-  std::map<WindDirection, double> correctionFactorsNorthHemisphere = {
+  std::map<WindDirection, double> WindCorrectionFactors = {
     {N, 0.06},
     {NNE, 0.05},
     {NE, 0.05},
