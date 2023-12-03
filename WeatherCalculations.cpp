@@ -166,17 +166,17 @@ char* Weather::getForecast(double currentPressure, const uint8_t month, WindDire
   uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
 
   static char outputForecast[57];
-  strcpy(outputForecast, ""); // Initialise an empty char array
+  strcpy(outputForecast, "");                      // Initialise an empty char array
 
   if (forecastOption == 0 || forecastOption == 21) {
     strcpy(outputForecast, "Exceptional Weather, ");
   }
 
-  if (pressureTrend == 1) {  // rising
+  if (pressureTrend == 1) {                        // rising
     strcat(outputForecast, forecast[rise_options[forecastOption]]);
-  } else if (pressureTrend == 2) {  // falling
+  } else if (pressureTrend == 2) {                 // falling
     strcat(outputForecast, forecast[fall_options[forecastOption]]);
-  } else {  // must be 'steady'
+  } else {                                         // must be 'steady'
     strcat(outputForecast, forecast[steady_options[forecastOption]]);
   }
 
