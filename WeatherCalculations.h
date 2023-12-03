@@ -7,7 +7,6 @@
 class Weather {
 public:
 
-
   enum WindDirection {
       N,    // North
       NNE,  // North-Northeast
