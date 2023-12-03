@@ -114,6 +114,7 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
   double constant = (pressureRange / 22.0);
   boolean summer = false;
+
   if (hemisphere == true && month >= 4 && month <= 9) summer = true;  // true if 'Summer'
   if (hemisphere == false && month < 4 && month > 9)  summer = true;  // true if 'Summer'
 
@@ -134,6 +135,7 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
   }
 
   if (currentPressure >= highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
+
   uint8_t forecastOption = floor((currentPressure - lowestPressureEverRecorded) / constant);
   forecastOption = constrain(forecastOption, 0, 21);
 
