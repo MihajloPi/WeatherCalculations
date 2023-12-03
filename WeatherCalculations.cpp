@@ -121,8 +121,8 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
     windDirection = static_cast<WindDirection>((windDirection + 8) % 16);  // Adjust wind direction for Southern Hemisphere, basically creates a circle of enums and rotates it by 180 degrees and removes the period of 16 (since there are 16 enums, not considering calm (NOW) wind situation)
   }
 
-  if (correctionFactorsNorthHemisphere.find(windDirection) != correctionFactorsNorthHemisphere.end()) {
-    currentPressure += correctionFactorsNorthHemisphere[windDirection] * pressureRange;
+  if (WindCorrectionFactors.find(windDirection) != WindCorrectionFactors.end()) {
+    currentPressure += WindCorrectionFactors[windDirection] * pressureRange;
   }
 
   if (summer == 1) {                             // if Summer
