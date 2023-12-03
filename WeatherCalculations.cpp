@@ -113,45 +113,48 @@ uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
 uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
   double constant = (pressureRange / 22.0);
-  boolean z_season = false;
-  if (month >= 4 && month <= 9) z_season = true;  // true if 'Summer'
+  boolean summer = false;
 
-  if (hemisphere == 1) {  // North hemisphere
+  if (hemisphere == 1) {                          // North hemisphere
+    if (month >= 4 && month <= 9) summer = true;  // true if 'Summer'
+
     if (correctionFactorsNorthHemisphere.find(windDirection) != correctionFactorsNorthHemisphere.end()) {
       currentPressure += correctionFactorsNorthHemisphere[windDirection] * pressureRange;
     }
 
-    if (z_season == 1) {         // if Summer
-      if (pressureTrend == 1) {  // rising
+    if (summer == 1) {                             // if Summer
+      if (pressureTrend == 1) {                    // rising
         currentPressure += 0.07 * pressureRange;
-      } else if (pressureTrend == 2) {  //  falling
+      } else if (pressureTrend == 2) {             //  falling
         currentPressure -= 0.07 * pressureRange;
       }
     }
-  } else {  // must be South hemisphere
+  } else {                                         // must be South hemisphere
+    if (month >= 4 && month <= 9) summer = false;  // true if 'Summer'
+
     if (correctionFactorsSouthHemisphere.find(windDirection) != correctionFactorsSouthHemisphere.end()) {
       currentPressure += correctionFactorsSouthHemisphere[windDirection] * pressureRange;
     }
 
-    if (z_season == 0) {         // if Winter
-      if (pressureTrend == 1) {  // rising
+    if (summer == 0) {                             // if Winter
+      if (pressureTrend == 1) {                    // rising
         currentPressure += 0.07 * pressureRange;
-      } else if (pressureTrend == 2) {  // falling
+      } else if (pressureTrend == 2) {             // falling
         currentPressure -= 0.07 * pressureRange;
       }
     }
-  }  // END North / South
+  }                                                // END North / South
   if (currentPressure == highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
   uint8_t forecastOption = floor((currentPressure - lowestPressureEverRecorded) / constant);
   forecastOption = constrain(forecastOption, 0, 21);
 
   uint8_t outputForecast;
 
-  if (pressureTrend == 1) {  // rising
+  if (pressureTrend == 1) {                        // rising
     outputForecast = rise_options[forecastOption];
-  } else if (pressureTrend == 2) {  // falling
+  } else if (pressureTrend == 2) {                 // falling
     outputForecast = fall_options[forecastOption];
-  } else {  // must be 'steady'
+  } else {                                         // must be 'steady'
     outputForecast = steady_options[forecastOption];
   }
 
@@ -163,17 +166,17 @@ char* Weather::getForecast(double currentPressure, const uint8_t month, WindDire
   uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
 
   static char outputForecast[57];
-  strcpy(outputForecast, ""); // Initialise an empty char array
+  strcpy(outputForecast, "");                      // Initialise an empty char array
 
   if (forecastOption == 0 || forecastOption == 21) {
     strcpy(outputForecast, "Exceptional Weather, ");
   }
 
-  if (pressureTrend == 1) {  // rising
+  if (pressureTrend == 1) {                        // rising
     strcat(outputForecast, forecast[rise_options[forecastOption]]);
-  } else if (pressureTrend == 2) {  // falling
+  } else if (pressureTrend == 2) {                 // falling
     strcat(outputForecast, forecast[fall_options[forecastOption]]);
-  } else {  // must be 'steady'
+  } else {                                         // must be 'steady'
     strcat(outputForecast, forecast[steady_options[forecastOption]]);
   }
 

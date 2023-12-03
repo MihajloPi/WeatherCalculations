@@ -50,8 +50,8 @@ public:
     {W, -0.03},
     {WNW, -0.005},
     {NW, 0.015},
-    {NNW, 0.03}
-    { NOW, 0.0 }
+    {NNW, 0.03},
+    {NOW, 0.0}
   };
 
   // Correction factors for wind direction in the southern hemisphere
@@ -71,8 +71,8 @@ public:
     {E, -0.03},
     {ESE, -0.005},
     {SE, 0.015},
-    {SSE, 0.03}
-    { NOW, 0.0 }
+    {SSE, 0.03},
+    {NOW, 0.0}
   };
 
 
