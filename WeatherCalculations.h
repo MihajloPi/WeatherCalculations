@@ -8,9 +8,9 @@ class Weather {
 public:
   const char forecast[27][36] = { "Settled fine", "Fine weather", "Becoming fine", "Fine, becoming less settled", "Fine, possible showers", "Fairly fine, improving", "Fairly fine, possible showers early", "Fairly fine, showery later", "Showery early, improving", "Changeable, mending", "Fairly fine, showers likely", "Rather unsettled clearing later", "Unsettled, probably improving", "Showery, bright intervals", "Showery, becoming less settled", "Changeable, some rain", "Unsettled, short fine intervals", "Unsettled, rain later", "Unsettled, some rain", "Mostly very unsettled", "Occasional rain, worsening", "Rain at times, very unsettled", "Rain at frequent intervals", "Rain, very unsettled", "Stormy, may improve", "Stormy, much rain" };
   // equivalents of Zambretti 'dial window' letters A - Z
-  const uint8_t rise_options[22] = { 25, 25, 25, 24, 24, 19, 16, 12, 11, 9, 8, 6, 5, 2, 1, 1, 0, 0, 0, 0, 0, 0 };
-  const uint8_t steady_options[22] = { 25, 25, 25, 25, 25, 25, 23, 23, 22, 18, 15, 13, 10, 4, 1, 1, 0, 0, 0, 0, 0, 0 };
-  const uint8_t fall_options[22] = { 25, 25, 25, 25, 25, 25, 25, 25, 23, 23, 21, 20, 17, 14, 7, 3, 1, 1, 1, 0, 0, 0 };
+  const uint8_t rise_options[22] = {25, 25, 25, 24, 24, 19, 16, 12, 11, 9, 8, 6, 5, 2, 1, 1, 0, 0, 0, 0, 0, 0};
+  const uint8_t steady_options[22] = {25, 25, 25, 25, 25, 25, 23, 23, 22, 18, 15, 13, 10, 4, 1, 1, 0, 0, 0, 0, 0, 0};
+  const uint8_t fall_options[22] = {25, 25, 25, 25, 25, 25, 25, 25, 23, 23, 21, 20, 17, 14, 7, 3, 1, 1, 1, 0, 0, 0};
 
   enum WindDirection {
       N,    // North
@@ -33,7 +33,7 @@ public:
   };
 
 
-  // Correction factors for wind direction in the northern hemisphere
+  // Correction factors for wind direction
   std::map<WindDirection, double> correctionFactorsNorthHemisphere = {
     {N, 0.06},
     {NNE, 0.05},
@@ -53,28 +53,6 @@ public:
     {NNW, 0.03},
     {NOW, 0.0}
   };
-
-  // Correction factors for wind direction in the southern hemisphere
-  std::map<WindDirection, double> correctionFactorsSouthHemisphere = {
-    {S, 0.06},
-    {SSW, 0.05},
-    {SW, 0.05},
-    {WSW, 0.02},
-    {W, -0.005},
-    {WNW, -0.02},
-    {NW, -0.05},
-    {NNW, -0.085},
-    {N, -0.12},
-    {NNE, -0.1},
-    {NE, -0.06},
-    {ENE, -0.045},
-    {E, -0.03},
-    {ESE, -0.005},
-    {SE, 0.015},
-    {SSE, 0.03},
-    {NOW, 0.0}
-  };
-
 
   Weather();
   double tempFtoC(double Temperature);
