@@ -115,10 +115,9 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
   double constant = (pressureRange / 22.0);
   boolean summer = false;
   if (hemisphere == true && month >= 4 && month <= 9) summer = true;  // true if 'Summer'
-  if (hemisphere == false && month < 4 && month > 9)  summer = true; // true if 'Summer'
+  if (hemisphere == false && month < 4 && month > 9)  summer = true;  // true if 'Summer'
 
-  if (hemisphere == false) {                      //South hemisphere
-    if (month >= 4 && month <= 9) summer = false; // true if 'Summer'
+  if (hemisphere == false) {                     //South hemisphere
     windDirection = static_cast<WindDirection>((windDirection + 8) % 16);  // Adjust wind direction for Southern Hemisphere, basically creates a circle of enums and rotates it by 180 degrees and removes the period of 16 (since there are 16 enums, not considering calm (NOW) wind situation)
   }
 
@@ -134,7 +133,7 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
     }
   }
 
-  if (currentPressure == highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
+  if (currentPressure >= highestPressureEverRecorded) currentPressure = highestPressureEverRecorded - 1;
   uint8_t forecastOption = floor((currentPressure - lowestPressureEverRecorded) / constant);
   forecastOption = constrain(forecastOption, 0, 21);
 
