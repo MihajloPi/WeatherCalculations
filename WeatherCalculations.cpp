@@ -72,13 +72,13 @@ double Weather::getWindChill(double Temperature, double WindSpeed) {
   return WindChill;
 };
 
-uint8_t Weather::getComfort(double heatIndex) {
-  if (heatIndex <= 23.0) return 1;       //Uncomfortable
-  else if (heatIndex <= 26.0) return 2;  //Comfortable
-  else if (heatIndex <= 29.0) return 3;  //Some discomfort
-  else if (heatIndex <= 39.0) return 4;  //Hot feeling
-  else if (heatIndex <= 45.0) return 5;  //Great discomfort; avoid exertion
-  else return 6;                         //Dangerous; probable heat stroke
+Weather::Comfort Weather::getComfort(double heatIndex) {
+  if (heatIndex <= 23.0) return uncomfortable;           //Uncomfortable
+  else if (heatIndex <= 26.0) return comfortable;        //Comfortable
+  else if (heatIndex <= 29.0) return small_discomfort;   //Some discomfort
+  else if (heatIndex <= 39.0) return medium_discomfort;  //Hot feeling
+  else if (heatIndex <= 45.0) return great_discomfort;   //Great discomfort; avoid exertion
+  else return dangerous;                                 //Dangerous; probable heat stroke
 }
 
 /**
@@ -110,7 +110,7 @@ uint16_t Weather::getAQI(uint16_t PM25, uint16_t PM10) {
   return max(AQI_25, AQI_10);
 }
 
-uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
+uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month, WindDirection windDirection, const PressureTrend pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
   double pressureRange = highestPressureEverRecorded - lowestPressureEverRecorded;
   double constant = (pressureRange / 22.0);
   boolean summer = false;
@@ -127,9 +127,9 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
   }
 
   if (summer == 1) {                             // if Summer
-    if (pressureTrend == 1) {                    // rising
+    if (pressureTrend == rising) {               // rising
       currentPressure += 0.07 * pressureRange;
-    } else if (pressureTrend == 2) {             //  falling
+    } else if (pressureTrend == falling) {       //  falling
       currentPressure -= 0.07 * pressureRange;
     }
   }
@@ -141,27 +141,27 @@ uint8_t Weather::getForecastSeverity(double currentPressure, const uint8_t month
 
   uint8_t outputForecast;
 
-  if (pressureTrend == 1) {                        // rising
+  if (pressureTrend == rising) {                        // rising
     outputForecast = rise_options[forecastOption];
-  } else if (pressureTrend == 2) {                 // falling
+  } else if (pressureTrend == falling) {                // falling
     outputForecast = fall_options[forecastOption];
-  } else {                                         // must be 'steady'
+  } else {if (pressureTrend == steady)                                             // must be 'steady'
     outputForecast = steady_options[forecastOption];
   }
 
   return outputForecast;
 }
 
-char* Weather::getForecast(double currentPressure, const uint8_t month, WindDirection windDirection, const uint8_t pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
-
-  uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
+char* Weather::getForecast(double currentPressure, const uint8_t month, WindDirection windDirection, PressureTrend pressureTrend, const boolean hemisphere, const double highestPressureEverRecorded, const double lowestPressureEverRecorded) {
 
   static char outputForecast[57];
   strcpy(outputForecast, "");                      // Initialise an empty char array
 
-  if (forecastOption == 0 || forecastOption == 21) {
-    strcpy(outputForecast, "Exceptional Weather, ");
-  }
+  uint8_t forecastOption = getForecastSeverity(currentPressure, month, windDirection, pressureTrend, hemisphere, highestPressureEverRecorded, lowestPressureEverRecorded);
+
+//  if (forecastOption == 0 || forecastOption == 21) {      //Problem here is that this always works for steady weather which is option 0, but was intended to be activated only when I have lower than 0 or higher than 21, but I constain it in getForecastSeverity function
+//    strcpy(outputForecast, "Exceptional Weather, ");
+//  }
 
   strcat(outputForecast, forecast[forecastOption]);
 
