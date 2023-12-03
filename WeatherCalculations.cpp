@@ -164,11 +164,11 @@ char* Weather::getForecast(double currentPressure, const uint8_t month, WindDire
   }
 
   if (pressureTrend == 1) {                        // rising
-    strcat(outputForecast, forecast[rise_options[forecastOption]]);
+    strcat(outputForecast, forecast[forecastOption]);
   } else if (pressureTrend == 2) {                 // falling
-    strcat(outputForecast, forecast[fall_options[forecastOption]]);
+    strcat(outputForecast, forecast[forecastOption]);
   } else {                                         // must be 'steady'
-    strcat(outputForecast, forecast[steady_options[forecastOption]]);
+    strcat(outputForecast, forecast[forecastOption]);
   }
 
   return outputForecast;
